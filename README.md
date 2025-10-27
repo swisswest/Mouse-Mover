@@ -13,3 +13,7 @@ If you built the application using Python and PyInstaller, it was likely done wi
 ```bash
 python -m PyInstaller --onefile --noconsole main.py
 ```
+
+## Infos
+
+if you work on the Project and you change something, pls delete the .exe file and create a new one before you commit. You will find the command above. Thanks ;)

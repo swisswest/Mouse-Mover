@@ -5,23 +5,29 @@ import time
 import pyautogui
 
 running = False
+log_visible = False  # Log initially hidden
+
+# Standard- and log-window size
+STANDARD_SIZE = "300x250"
+LOG_SIZE = "1000x600"
+
 
 def log_message(message):
-    """Fügt eine Nachricht ins Log ein, wenn das Log sichtbar ist."""
+    """Adds a message to the log if visible."""
     if log_visible:
         log_text.insert(tk.END, message + "\n")
         log_text.see(tk.END)
 
+
 def move_mouse(delay):
-    counter = 0
     global running
     while running:
-        counter += 1
         pyautogui.moveRel(10, 0, duration=0.2)
         pyautogui.moveRel(-10, 0, duration=0.2)
         pyautogui.press('shift')
-        log_message("Mouse moved and 'shift' pressed." + f" (Count: {counter})")
+        log_message("Mouse moved and 'shift' pressed.")
         time.sleep(delay)
+
 
 def start():
     global running
@@ -32,57 +38,61 @@ def start():
         if delay <= 0:
             raise ValueError
     except ValueError:
-        messagebox.showerror("Fehler", "Bitte eine gültige Zahl > 0 eingeben.")
+        messagebox.showerror("Error", "Please enter a valid number greater than 0.")
         return
 
     running = True
-    label_status.config(text="Status: Aktiv", fg="green")
+    label_status.config(text="Status: Active", fg="green")
     log_message("Started mouse movement.")
     threading.Thread(target=move_mouse, args=(delay,), daemon=True).start()
+
 
 def stop():
     global running
     running = False
-    label_status.config(text="Status: Gestoppt", fg="red")
+    label_status.config(text="Status: Stopped", fg="red")
     log_message("Stopped mouse movement.")
 
-def check_window_size(event):
-    """Überprüft die Fenstergröße und zeigt/versteckt das Log-Feld."""
+
+def toggle_log():
+    """Show or hide the log panel and resize window."""
     global log_visible
-    width = root.winfo_width()
-    height = root.winfo_height()
-
-    if width > 1000 and height > 500 and not log_visible:
-        log_text.pack(fill='both', expand=True, pady=10)
-        log_visible = True
-        log_message("Log panel activated due to window size.")
-
-    elif (width <= 1000 or height <= 500) and log_visible:
+    if log_visible:
+        # Hide log
         log_text.pack_forget()
+        toggle_button.config(text="Show Log")
+        root.geometry(STANDARD_SIZE)
         log_visible = False
+    else:
+        # Show log
+        log_text.pack(fill='both', expand=True, pady=10)
+        toggle_button.config(text="Hide Log")
+        root.geometry(LOG_SIZE)
+        log_visible = True
+        log_message("--- Log window opened ---")
 
-# GUI erstellen
+
+# Create GUI
 root = tk.Tk()
-root.title("Maus Beweger")
-root.geometry("300x200")
+root.title("Mouse Mover")
+root.geometry(STANDARD_SIZE)
 
-log_visible = False  
-
-tk.Label(root, text="Pause (Sekunden):").pack(pady=5)
+tk.Label(root, text="Delay (seconds):").pack(pady=5)
 entry_delay = tk.Entry(root)
-entry_delay.insert(0, "5")  
+entry_delay.insert(0, "5")
 entry_delay.pack(pady=5)
 
 tk.Button(root, text="Start", command=start, width=17).pack(pady=5)
 tk.Button(root, text="Stop", command=stop, width=17).pack(pady=5)
 
-label_status = tk.Label(root, text="Status: Gestoppt", fg="red")
+label_status = tk.Label(root, text="Status: Stopped", fg="red")
 label_status.pack(pady=10)
 
+# Toggle log button
+toggle_button = tk.Button(root, text="Show Log", command=toggle_log, width=17)
+toggle_button.pack(pady=5)
 
-log_text = tk.Text(root, height=8, state='normal')
-
-
-root.bind("<Configure>", check_window_size)
+# Log field (initially hidden)
+log_text = tk.Text(root, height=8)
 
 root.mainloop()
