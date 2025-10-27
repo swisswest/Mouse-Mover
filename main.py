@@ -11,6 +11,7 @@ def move_mouse(delay):
     while running:
         pyautogui.moveRel(10, 0, duration=0.2)
         pyautogui.moveRel(-10, 0, duration=0.2)
+        pyautogui.press('shift')
         time.sleep(delay)
 
 def start():
