@@ -16,4 +16,4 @@ python -m PyInstaller --onefile --noconsole main.py
 
 ## Infos
 
-if you work on the Project and you change something, pls delete the .exe file and create a new one before you commit. You will find the command above. Thanks ;)
+if you work on the Project and you change something, pls delete the .exe file and create a new one before you commit. You will find the command above. Check if the .exe file is done creating then commit Thanks ;)

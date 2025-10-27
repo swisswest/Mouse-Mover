@@ -20,12 +20,14 @@ def log_message(message):
 
 
 def move_mouse(delay):
+    counter = 0
     global running
     while running:
+        counter += 1
         pyautogui.moveRel(10, 0, duration=0.2)
         pyautogui.moveRel(-10, 0, duration=0.2)
         pyautogui.press('shift')
-        log_message("Mouse moved and 'shift' pressed.")
+        log_message(f"Mouse moved and 'shift' pressed. (Iteration: {counter})")
         time.sleep(delay)
 
 
